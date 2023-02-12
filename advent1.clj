@@ -70,9 +70,51 @@
               (recur (rest strategy) (+ score 6 shape-points))
               (recur (rest strategy) (+ score 0 shape-points)))))))))
 
+(defn advent-4
+  [input]
+  (let [outcomes {\A {\X 3 \Y 4 \Z 8}
+                  \B {\X 1 \Y 5 \Z 9}
+                  \C {\X 2 \Y 6 \Z 7}}]
+    (loop [strategy input
+           score 0]
+      (let [pair (first strategy)
+            opp (first pair)
+            me  (last pair)
+            _ (prn "opp: " opp "me: " me)]
+       (if (empty? strategy)
+        score
+        (recur (rest strategy) (+ score (get-in outcomes [opp me]))))))))
 
-(s/split-lines "file")
+(let [s "abcdefgh"]
+  )
+
+#_(s/split-lines "file")
 ;; x>z z>y b>a
-#_(second (s/split-lines (slurp  "./1/input2")))
-#_(advent-3 (s/split-lines (slurp  "./1/input2")))
+#_(second (s/split-lines (slurp  "./input/input2")))
+#_(advent-3 (s/split-lines (slurp  "./input/input2")))
 #_(advent-3 ["A Y" "B X" "C Z"]) ;; 15
+#_(advent-4 ["A Y" "B X" "C Z"]) ;; 12
+#_(advent-4 (s/split-lines (slurp  "./input/input2")))
+
+(defn advent-5
+  [input]
+  (let [letters "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        priorities (into {} (map-indexed #(vector %2 %1) letters))]
+    (loop [items input
+           sum-of-priorities 0]
+      (if (empty? items)
+        sum-of-priorities
+        (let [item (first items)
+              splitted (split-at (/ (count item) 2) item)
+              common (first (clojure.set/intersection
+                             (set (first splitted))
+                             (set (last splitted))))
+              score (+ (get priorities common) 1)
+              _ (prn "score" score "item " item "common" common)]
+          (recur (rest items) (+ sum-of-priorities score)))))))
+
+#_(last (s/split-lines (slurp "./input/input3")))
+#_(advent-5 (s/split-lines (slurp "./input/input3")))
+
+
+
